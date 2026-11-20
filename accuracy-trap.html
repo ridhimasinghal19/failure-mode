@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Accuracy Trap | Failure Mode</title>
+  <meta name="description" content="An interactive look at why accuracy is a poor score when the thing you want to find is rare.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="logo.svg" alt="">
+        <span class="brand-name">Failure Mode</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a class="nav-link" href="index.html">Home</a></li>
+          <li><a class="nav-link" href="accuracy-trap.html" aria-current="page">Accuracy Trap</a></li>
+          <li><a class="nav-link" href="overfitting.html">Overfitting</a></li>
+          <li><a class="nav-link" href="leakage.html">Leakage Detective</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" role="main">
+    <section class="page-head">
+      <div class="wrap">
+        <h1>The Accuracy Trap</h1>
+        <p class="lede">
+          A fraud model scores every case from 0 to 1. Pick a threshold, and every case above it is flagged.
+          Try to find a setting that is both accurate and useful. You will see that those are not the same thing.
+        </p>
+      </div>
+    </section>
+
+    <div class="wrap lab">
+      <aside class="controls" aria-label="Controls">
+        <h2>Controls</h2>
+
+        <div class="control">
+          <div class="control-top">
+            <label for="rate">Fraud rate</label>
+            <output id="rate-out" for="rate">1.0%</output>
+          </div>
+          <input id="rate" type="range" min="0.5" max="30" step="0.5" value="1" aria-describedby="rate-hint">
+          <p id="rate-hint" class="hint">The share of all cases that are really fraud.</p>
+        </div>
+
+        <div class="control">
+          <div class="control-top">
+            <label for="threshold">Threshold</label>
+            <output id="threshold-out" for="threshold">0.90</output>
+          </div>
+          <input id="threshold" type="range" min="0.05" max="0.95" step="0.01" value="0.9" aria-describedby="threshold-hint">
+          <p id="threshold-hint" class="hint">A case is flagged when its score is above this.</p>
+        </div>
+
+        <div class="control">
+          <div class="control-top">
+            <label for="skill">Model skill</label>
+            <output id="skill-out" for="skill">5 of 10</output>
+          </div>
+          <input id="skill" type="range" min="1" max="10" step="1" value="5" aria-describedby="skill-hint">
+          <p id="skill-hint" class="hint">How far apart the model keeps fraud and genuine scores.</p>
+        </div>
+
+        <div class="button-row">
+          <button type="button" class="btn btn-small btn-quiet" id="best-accuracy">Maximize accuracy</button>
+          <button type="button" class="btn btn-small btn-quiet" id="best-f1">Maximize F1</button>
+          <button type="button" class="btn btn-small btn-quiet" id="reset">Reset</button>
+        </div>
+      </aside>
+
+      <div class="stage">
+        <section class="card" aria-labelledby="chart-title">
+          <h2 id="chart-title">Where the scores land</h2>
+          <p class="sub">Each group is drawn at the same height so you can see its shape. The real counts are in the table below.</p>
+          <div id="chart" class="chart" role="img" aria-label="Two overlapping score curves, one for genuine cases and one for fraud, with a vertical line showing the threshold."></div>
+          <ul class="legend">
+            <li><span class="swatch genuine"></span>Genuine cases</li>
+            <li><span class="swatch fraud"></span>Fraud cases</li>
+          </ul>
+        </section>
+
+        <section aria-label="Scores">
+          <div class="readouts" id="readouts"></div>
+        </section>
+
+        <div id="verdict" class="callout" aria-live="polite"></div>
+
+        <section class="card" aria-labelledby="matrix-title">
+          <h2 id="matrix-title">Out of 10,000 cases</h2>
+          <p class="sub" id="population-note"></p>
+          <div class="stackbar" id="stackbar" aria-hidden="true"><span class="seg-fraud" id="seg-fraud"></span></div>
+          <table class="matrix matrix-spaced">
+            <thead>
+              <tr>
+                <td></td>
+                <th scope="col">Flagged as fraud</th>
+                <th scope="col">Passed as genuine</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Actually fraud</th>
+                <td class="mcell tp"><strong id="tp">0</strong><span>Caught</span></td>
+                <td class="mcell fn"><strong id="fn">0</strong><span>Missed</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Actually genuine</th>
+                <td class="mcell fp"><strong id="fp">0</strong><span>False alarms</span></td>
+                <td class="mcell tn"><strong id="tn">0</strong><span>Correctly passed</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="card" aria-labelledby="goal-title">
+          <h2 id="goal-title">Your challenge</h2>
+          <p class="sub">Find settings that meet both goals. If they cannot be met, change the fraud rate or the model skill and see why.</p>
+          <ul class="goal-list" id="goals"></ul>
+        </section>
+
+        <section class="card">
+          <h2>What the scores mean</h2>
+          <ul class="checklist">
+            <li><strong>Accuracy</strong> is the share of all cases the model got right. When fraud is rare, passing everything scores high.</li>
+            <li><strong>Precision</strong> is how many flagged cases were really fraud. Low precision means reviewers drown in false alarms.</li>
+            <li><strong>Recall</strong> is how many fraud cases were caught. Low recall means the thing you built the model for is being missed.</li>
+            <li><strong>F1</strong> blends precision and recall into one number, and punishes a model that is weak at either.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="wrap">
+      <p>Failure Mode: interactive notes on why machine learning models fail.</p>
+      <p>Everything runs in your browser. No data is collected or sent anywhere.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/accuracy.js"></script>
+</body>
+</html>

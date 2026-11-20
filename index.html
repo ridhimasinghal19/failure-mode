@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Failure Mode: why machine learning models fail</title>
+  <meta name="description" content="Interactive experiments that show how machine learning models fail quietly, and how to catch it.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="logo.svg" alt="">
+        <span class="brand-name">Failure Mode</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a class="nav-link" href="index.html" aria-current="page">Home</a></li>
+          <li><a class="nav-link" href="accuracy-trap.html">Accuracy Trap</a></li>
+          <li><a class="nav-link" href="overfitting.html">Overfitting</a></li>
+          <li><a class="nav-link" href="leakage.html">Leakage Detective</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" role="main">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <h1>A model can score 99% and still fail.</h1>
+          <p class="lede">
+            Failure Mode is a set of small experiments about how machine learning models go wrong
+            without any error message, and how to catch it before anyone depends on them.
+          </p>
+          <div class="hero-actions">
+            <a class="btn" href="accuracy-trap.html">Try the Accuracy Trap</a>
+            <a class="btn btn-quiet" href="#experiments">See the experiments</a>
+          </div>
+        </div>
+
+        <figure class="dotfigure">
+          <div id="dotgrid" class="dotgrid" role="img"
+               aria-label="A grid of 800 dots. Eight are red and stand for fraud. A model that flags nothing marks every dot as fine, so it is 99% accurate and catches none of the eight red ones."></div>
+          <div class="dotstats">
+            <div>
+              <span class="dotstat-value">99.0%</span>
+              <span class="dotstat-label">Accuracy reported</span>
+            </div>
+            <div>
+              <span class="dotstat-value bad">0 of 8</span>
+              <span class="dotstat-label">Fraud caught</span>
+            </div>
+          </div>
+          <figcaption>
+            800 transactions, 8 of them fraud. A model that never flags anything is right 792 times.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="experiments" class="section">
+      <div class="wrap">
+        <h2>Three ways a model fails</h2>
+        <p class="section-intro">
+          Each experiment runs in your browser. Move the sliders, make a prediction, and see what breaks.
+        </p>
+
+        <div class="rows">
+          <a class="row" href="accuracy-trap.html">
+            <div>
+              <h3>The Accuracy Trap</h3>
+              <p class="row-fail">The score looks great while the cases that matter are ignored.</p>
+            </div>
+            <div>
+              <p>Rare events make accuracy a poor judge of a model.</p>
+              <p class="row-do">Move a threshold and watch precision and recall trade places.</p>
+            </div>
+          </a>
+
+          <a class="row" href="overfitting.html">
+            <div>
+              <h3>The Overfitting Playground</h3>
+              <p class="row-fail">The model memorizes its training data instead of learning the pattern.</p>
+            </div>
+            <div>
+              <p>A flexible enough model can match noise perfectly and still be useless on new data.</p>
+              <p class="row-do">Raise model complexity and find the point where test error turns upward.</p>
+            </div>
+          </a>
+
+          <a class="row" href="leakage.html">
+            <div>
+              <h3>The Leakage Detective</h3>
+              <p class="row-fail">The model cheated and nobody noticed.</p>
+            </div>
+            <div>
+              <p>Information from the answer sneaks into the inputs, and the results look too good.</p>
+              <p class="row-do">Investigate five cases and name the hidden mistake in each.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>Three questions to ask before trusting a score</h2>
+        <ul class="checklist">
+          <li>What would a lazy model score? If doing nothing gets 99%, then 99% proves nothing.</li>
+          <li>Was the test data kept untouched until the very end, including when choosing settings and features?</li>
+          <li>Will every input be known at the moment a real prediction has to be made?</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="wrap">
+      <p>Failure Mode: interactive notes on why machine learning models fail.</p>
+      <p>Everything runs in your browser. No data is collected or sent anywhere.</p>
+    </div>
+  </footer>
+
+  <script src="js/home.js"></script>
+</body>
+</html>

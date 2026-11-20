@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Leakage Detective | Failure Mode</title>
+  <meta name="description" content="Five cases of machine learning results that were too good to be true. Find the hidden mistake in each.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="logo.svg" alt="">
+        <span class="brand-name">Failure Mode</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a class="nav-link" href="index.html">Home</a></li>
+          <li><a class="nav-link" href="accuracy-trap.html">Accuracy Trap</a></li>
+          <li><a class="nav-link" href="overfitting.html">Overfitting</a></li>
+          <li><a class="nav-link" href="leakage.html" aria-current="page">Leakage Detective</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" role="main">
+    <section class="page-head">
+      <div class="wrap">
+        <h1>The Leakage Detective</h1>
+        <p class="lede">
+          Leakage is when information the model should not have sneaks into its training, so the score looks
+          wonderful and means nothing. Each case below reports a result that is too good. Find out why.
+        </p>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <div id="case-root" class="case-root">
+        <noscript>
+          <p class="callout bad">This experiment needs JavaScript. Turn it on for this page and reload.</p>
+        </noscript>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="wrap">
+      <p>Failure Mode: interactive notes on why machine learning models fail.</p>
+      <p>Everything runs in your browser. No data is collected or sent anywhere.</p>
+    </div>
+  </footer>
+
+  <script src="js/leakage.js"></script>
+</body>
+</html>

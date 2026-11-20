@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Overfitting Playground | Failure Mode</title>
+  <meta name="description" content="Fit models of growing complexity to noisy data and watch the error on unseen data turn upward.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="logo.svg" alt="">
+        <span class="brand-name">Failure Mode</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a class="nav-link" href="index.html">Home</a></li>
+          <li><a class="nav-link" href="accuracy-trap.html">Accuracy Trap</a></li>
+          <li><a class="nav-link" href="overfitting.html" aria-current="page">Overfitting</a></li>
+          <li><a class="nav-link" href="leakage.html">Leakage Detective</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" role="main">
+    <section class="page-head">
+      <div class="wrap">
+        <h1>The Overfitting Playground</h1>
+        <p class="lede">
+          The amber points are noisy measurements of a smooth curve. Give the model more flexibility and watch
+          what happens to its error on data it has never seen. The training error will keep falling. The test error will not.
+        </p>
+      </div>
+    </section>
+
+    <div class="wrap lab">
+      <aside class="controls" aria-label="Controls">
+        <h2>Controls</h2>
+
+        <div class="control">
+          <div class="control-top">
+            <label for="degree">Model complexity</label>
+            <output id="degree-out" for="degree">3</output>
+          </div>
+          <input id="degree" type="range" min="0" max="14" step="1" value="3" aria-describedby="degree-hint">
+          <p id="degree-hint" class="hint">The degree of the polynomial. Higher means a more flexible curve.</p>
+        </div>
+
+        <div class="control">
+          <div class="control-top">
+            <label for="noise">Noise</label>
+            <output id="noise-out" for="noise">0.25</output>
+          </div>
+          <input id="noise" type="range" min="0.05" max="0.6" step="0.05" value="0.25" aria-describedby="noise-hint">
+          <p id="noise-hint" class="hint">How far each measurement strays from the real pattern.</p>
+        </div>
+
+        <div class="control">
+          <div class="control-top">
+            <label for="points">Training points</label>
+            <output id="points-out" for="points">15</output>
+          </div>
+          <input id="points" type="range" min="8" max="40" step="1" value="15" aria-describedby="points-hint">
+          <p id="points-hint" class="hint">More data makes it harder to memorize.</p>
+        </div>
+
+        <div class="control control-check">
+          <input id="show-truth" type="checkbox" checked>
+          <label for="show-truth">Show the true pattern</label>
+        </div>
+        <div class="control control-check">
+          <input id="show-test" type="checkbox" checked>
+          <label for="show-test">Show unseen test points</label>
+        </div>
+
+        <div class="button-row">
+          <button type="button" class="btn btn-small" id="new-sample">New sample</button>
+          <button type="button" class="btn btn-small btn-quiet" id="reset">Reset</button>
+        </div>
+      </aside>
+
+      <div class="stage">
+        <section class="card" aria-labelledby="fit-title">
+          <h2 id="fit-title">The fitted curve</h2>
+          <p class="sub">Amber points are what the model trained on. Green rings are unseen points from the same pattern.</p>
+          <div id="fit-chart" class="chart" role="img" aria-label="A curve fitted to noisy training points."></div>
+          <ul class="legend">
+            <li><span class="swatch train"></span>Training points</li>
+            <li><span class="swatch fit"></span>Model</li>
+            <li><span class="swatch truth"></span>True pattern</li>
+            <li><span class="swatch test"></span>Unseen points</li>
+          </ul>
+        </section>
+
+        <section aria-label="Errors">
+          <div class="readouts" id="readouts"></div>
+        </section>
+
+        <div id="verdict" class="callout" aria-live="polite"></div>
+
+        <section class="card" aria-labelledby="error-title">
+          <h2 id="error-title">Error against complexity</h2>
+          <p class="sub">Training error only ever falls. Test error falls, bottoms out, then climbs. The ring marks the best choice for this sample.</p>
+          <div id="error-chart" class="chart" role="img" aria-label="Training and test error for each model complexity."></div>
+          <ul class="legend">
+            <li><span class="swatch train"></span>Training error</li>
+            <li><span class="swatch test"></span>Test error</li>
+          </ul>
+        </section>
+
+        <section class="card">
+          <h2>What to look for</h2>
+          <ul class="checklist">
+            <li>Start at degree 0 and move up. At first both errors fall together, which is underfitting giving way to a real fit.</li>
+            <li>Keep going past the lowest test error. The curve starts to wiggle through single points while the unseen points drift away from it.</li>
+            <li>Lower the training points to 8 and raise the complexity. With nearly as many coefficients as points, the model can hit every point exactly.</li>
+            <li>Raise the noise. The noise floor is the lowest test error any model can reach, because the noise itself cannot be predicted.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="wrap">
+      <p>Failure Mode: interactive notes on why machine learning models fail.</p>
+      <p>Everything runs in your browser. No data is collected or sent anywhere.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/overfit.js"></script>
+</body>
+</html>
